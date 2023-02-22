@@ -104,6 +104,25 @@ def findb(x_points, y_points):
         vector[i - 1] = (3 * (a2 - a1)) / h1 - (3 * (a1 - a0)) / h0
     return vector
 
+def findx(x_points, y_points, matrix, b):
+    num = len(matrix)
+    l = np.zeros(num)
+    m = np.zeros(num)
+    z = np.zeros(num)
+    l[0] = 1
+    h = [x_points[i + 1] - x_points[i] for i in range(num - 1)]
+    for i in range(1, num - 1):
+        l[i] = 2 * (x_points[i + 1] - x_points[i - 1]) - h[i - 1] * m[i - 1]
+        m[i] = h[i] / l[i]
+        z[i] = (b[i] - h[i - 1] * z[i - 1]) / l[i]
+
+    l[num - 1] = 1
+
+    x = np.zeros(num)
+    for i in range(num - 2, -1, -1):
+        x[i] = z[i] - m[i] * x[i + 1]
+    return x
+
 
 # This is the main function which runs everything
 def main():
@@ -127,7 +146,9 @@ def main():
     table3 = findMatrix(x_points3)
     print(table3, end="\n\n")
     b = findb(x_points3, y_points3)
-    print(b)
+    print(b, end="\n\n")
+    x = findx(x_points3, y_points3, table3, b)
+    print(x, end="\n\n")
     
 
 if __name__ == "__main__":
