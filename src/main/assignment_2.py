@@ -77,13 +77,33 @@ def hermite(x_points, y_points, f1x):
     matrix = apply_div_dif(matrix)
     return matrix
 
-
-def findMatrix(x_points, y_points):
+# This function finds the matrix through cubic sline interpolation
+def findMatrix(x_points):
     num_points = len(x_points)
-    return
+    matrix = np.zeros((num_points, num_points))
+    matrix[0][0] = 1
+    matrix[num_points - 1][num_points - 1] = 1
 
-def findVector(x, vals):
-    return
+    for i in range(1, num_points - 1):
+        matrix[i][i - 1] = x_points[i] - x_points[i - 1]
+        matrix[i][i + 1] = x_points[i + 1] - x_points[i]
+        matrix[i][i] = 2 * (matrix[i][i - 1] + matrix[i][i + 1])
+
+    return matrix
+
+# This function finds the b vector
+def findb(x_points, y_points):
+    num_points = len(x_points)
+    vector = np.zeros(num_points)
+    for i in range(2, num_points):
+        h0 = x_points[i - 1] - x_points[i - 2]
+        h1 = x_points[i] - x_points[i - 1]
+        a0 = y_points[i - 2]
+        a1 = y_points[i - 1]
+        a2 = y_points[i]
+        vector[i - 1] = (3 * (a2 - a1)) / h1 - (3 * (a1 - a0)) / h0
+    return vector
+
 
 # This is the main function which runs everything
 def main():
@@ -104,6 +124,11 @@ def main():
     print(table2, end="\n\n")
     x_points3 = [2, 5, 8, 10]
     y_points3 = [3, 5, 7, 9]
+    table3 = findMatrix(x_points3)
+    print(table3, end="\n\n")
+    b = findb(x_points3, y_points3)
+    print(b)
+    
 
 if __name__ == "__main__":
     main()
